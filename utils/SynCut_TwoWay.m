@@ -314,7 +314,23 @@ while true
 %         subplot(1,2,2);
 %         hist(bwClusterTotalFrustVecs(2,:));
 %         title(sprintf('CollageSol, %.2f',sum(bwClusterTotalFrustVecs(2,:))));
-        
+
+        fprintf('Phase Variance/ Phase differences on Edges: ')
+        EdgeDiffSum = phaseDiffonEdge(G.NVec, G.adjMat, params.vertPotCell, RelaxSolCell);
+        [~, Var, Rmeans] = varRatio(G.NVec, params.vertPotCell, RelaxSolCell);
+        VarMean = cellfun(@(x)norm(x-Rmeans{end}, 'fro'), Rmeans(1:end-1));
+        EdgeDiffMean = 0;
+        for i = 1:length(G.NVec)
+            for j = 1:(i-1)
+                EdgeDiffMean = EdgeDiffMean + norm(Rmeans{i}-Rmeans{j},'fro');
+            end
+        end
+        EdgeDiffMean = EdgeDiffMean*sum(G.adjMat(:))/2/G.numClusters;
+        fprintf('[RelaxedSol]: w/i cluster = %f, reduced cross cluster = %f, total = %f\n', ...
+            sum(Var(1:end-1))/sum(diag(EdgeDiffSum)), ...
+            sum(VarMean.*G.NVec(:))/EdgeDiffMean, Var(end)/sum(EdgeDiffSum(:)));%sum(sum(triu(EdgeDiffSum, 1))) );
+
+
         if ~exist('perEdgeFrustFigure', 'var')
             perEdgeFrustFigure = figure('Position',[50,100,800,600]);
         else
@@ -407,7 +423,7 @@ while true
     if (abs(xi) < tol) || (iterCounter >= maxIter) || ((xi_old < Inf) && (abs(xi-xi_old) < tol*xi_old))
         break
     end
-%     break;
+    break;
 end
 
 rslt = struct('G', G, 'params', params, 'iterCounter', iterCounter);

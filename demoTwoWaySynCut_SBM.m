@@ -8,11 +8,11 @@ syncableFlag = false;
 debugFlag    = true;
 newCaseFlag  = true;
 
-NVec = [50,50];  %%% number of vertices in each cluster of the SBM ---- length of
+NVec = [40,60];  %%% number of vertices in each cluster of the SBM ---- length of
                 %%% this vector indicates the number of clusters
 d = 3;   %%% dimension of the orthogonal group
 p = 1;%0.6;   %%% in cluster connection probability
-q = 0.2;   %% out of cluster connection probability
+q = 0.05;   %% out of cluster connection probability
 
 maxIter = 10;
 tol = 1e-8;
@@ -67,7 +67,7 @@ if newCaseFlag
             %%% the line below leads to a failure
 %             edgePotCell{G.ccRowIdx(j),G.ccColIdx(j)} = vertPotCell{G.ccRowIdx(j)}*vertPotCell{G.ccColIdx(j)}'*R;
             %%% the line below leads to a success
-            edgePotCell{G.ccRowIdx(j),G.ccColIdx(j)} = vertPotCell{G.ccRowIdx(j)}*R'*vertPotCell{G.ccColIdx(j)}';
+            edgePotCell{G.ccRowIdx(j),G.ccColIdx(j)} = vertPotCell{G.ccRowIdx(j)}*randSO3(3)*vertPotCell{G.ccColIdx(j)}';
 %             edgePotCell{G.ccRowIdx(j),G.ccColIdx(j)} = vertPotCell{G.ccRowIdx(j)}*vertPotCell{G.ccColIdx(j)}'*randSO3(3); % orth(rand(d));%R*vertPotCell{G.ccRowIdx(j)}*vertPotCell{G.ccColIdx(j)}';%
             edgePotCell{G.ccColIdx(j),G.ccRowIdx(j)} = edgePotCell{G.ccRowIdx(j),G.ccColIdx(j)}';
         end
