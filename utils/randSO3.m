@@ -3,7 +3,7 @@ function r = randSO3(sigma)
 % sample random SO3 matrix with normal distribution on rotation angle theta
 
 % sample angle
-theta = rand*sigma;
+theta = randn*sigma;
 while abs(theta) > pi
     theta = rand;
 end
